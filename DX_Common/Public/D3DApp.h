@@ -22,11 +22,19 @@ protected:
 
 	void CreateCommandObjects();
 	void CreateSwapChain();
+	void CreateRtvAndDsvDescriptorHeaps();
+
+	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;
+	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView() const;
 
 protected:
 
+	// Main application window handle
 	HWND m_hMainWnd = nullptr; // main window handle
+	int m_ClientWidth = 800;
+	int m_ClientHeight = 600;
 
+	// Direct3D objects
 	Microsoft::WRL::ComPtr<IDXGIFactory7> m_dxgiFactory;
 	Microsoft::WRL::ComPtr<ID3D12Device> m_d3dDevice;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
@@ -37,7 +45,13 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_DirectCmdListAlloc;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_CommandList;
 
+	// Descriptor Heaps
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_RtvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_DsvHeap;
+
+	// Swap chain back buffers
 	static const int s_SwapChainBufferCount = 2;
+	int m_CurrentBackBuffer = 0;
 
 	// Descriptor sizes
 	UINT m_RtvDescriptorSize = 0;
@@ -50,7 +64,4 @@ protected:
 
 	// Derived class should set these in derived constructor to customize starting values.
 	DXGI_FORMAT m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	int m_ClientWidth = 800;
-	int m_ClientHeight = 600;
 };

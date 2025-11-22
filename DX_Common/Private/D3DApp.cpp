@@ -2,6 +2,7 @@
 
 #include "D3DApp.h"
 #include "D3DUtil.h"
+#include "directx/d3dx12.h"
 
 D3DApp::D3DApp()
 {
@@ -158,4 +159,46 @@ void D3DApp::CreateSwapChain()
 		m_CommandQueue.Get(),
 		&sd,
 		m_SwapChain.GetAddressOf()));
+}
+
+void D3DApp::CreateRtvAndDsvDescriptorHeaps()
+{
+	// RTV Heap
+	// Need s_SwapChainBufferCount render target views
+	// to describe the buffer resources in the swap chain we will render into
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+	rtvHeapDesc.NumDescriptors = s_SwapChainBufferCount;
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	rtvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(m_d3dDevice->CreateDescriptorHeap(
+		&rtvHeapDesc,
+		IID_PPV_ARGS(m_RtvHeap.GetAddressOf())));
+
+	// DSV Heap
+	// Need one depth/stencil view
+	// to use as the depth/stencil buffer for depth testing
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+	dsvHeapDesc.NumDescriptors = 1;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	dsvHeapDesc.NodeMask = 0;
+	ThrowIfFailed(m_d3dDevice->CreateDescriptorHeap(
+		&dsvHeapDesc,
+		IID_PPV_ARGS(m_DsvHeap.GetAddressOf())));
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
+{
+	// CD3DX12 constructor to offset to the RTV of the current back buffer
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		m_RtvHeap->GetCPUDescriptorHandleForHeapStart(), // handle start
+		m_CurrentBackBuffer, // index to offset
+		m_RtvDescriptorSize); // byte size of each descriptor
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilView() const
+{
+	// CD3DX12 constructor to get the DSV (only one, so no offset needed)
+	return m_DsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
