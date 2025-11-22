@@ -110,7 +110,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Public</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Public;$(ProjectDir)Vendors\DirectX-Headers\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -143,6 +143,17 @@
     <ClInclude Include="Public\framework.h" />
     <ClInclude Include="Public\pch.h" />
     <ClInclude Include="Public\D3DApp.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_barriers.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_check_feature_support.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_core.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_default.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_pipeline_state_stream.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_property_format_table.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_render_pass.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_resource_helpers.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_root_signature.h" />
+    <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_state_object.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Private\D3DUtil.cpp" />
