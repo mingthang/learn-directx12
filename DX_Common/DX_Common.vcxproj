@@ -143,6 +143,7 @@
     <ClInclude Include="Public\framework.h" />
     <ClInclude Include="Public\pch.h" />
     <ClInclude Include="Public\D3DApp.h" />
+    <ClInclude Include="Public\Timer.h" />
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12.h" />
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_barriers.h" />
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_check_feature_support.h" />
@@ -165,6 +166,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Private\D3DApp.cpp" />
+    <ClCompile Include="Private\Timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

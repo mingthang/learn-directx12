@@ -60,6 +60,9 @@
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_state_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Public\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Private\DX_Common.cpp">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Private\D3DUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

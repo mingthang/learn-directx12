@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Timer.h"
 
 #include <Windows.h>
