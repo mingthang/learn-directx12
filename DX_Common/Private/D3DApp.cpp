@@ -4,16 +4,100 @@
 #include "D3DUtil.h"
 #include "directx/d3dx12.h"
 
-D3DApp::D3DApp()
+D3DApp::~D3DApp()
 {
+	// The destructor releases the COM interfaces the D3DApp acquires, 
+	// and flushes the command queue.
+	// The reason we need to flush the command queue in the destructor is that
+	// we need to wait until the GPU is done processing the commands in the queue
+	// before we destroy any resources the GPU is still referencing.
+	// Otherwise, the GPU might crash when the application exits.
+	if (m_d3dDevice != nullptr)
+		FlushCommandQueue();
 }
 
-bool D3DApp::Init()
+HINSTANCE D3DApp::AppInst()const
 {
-	if (!InitDirect3D())
+	// returns a copy of the application instance handle
+	return m_hAppInst;
+}
+
+HWND D3DApp::MainWnd()const
+{
+	// returns a copy of the main window handle.
+	return m_hMainWnd;
+}
+
+float D3DApp::AspectRatio()const
+{
+	// the ratio of the back buffer width to its height
+	return static_cast<float>(m_ClientWidth) / m_ClientHeight;
+}
+
+bool D3DApp::Get4xMsaaState() const
+{
+	// returns true is 4X MSAA is enabled and false otherwise.
+	return m_4xMsaaState;
+}
+
+void D3DApp::Set4xMsaaState(bool value)
+{
+	// Enables/disables 4X MSAA.
+	if (m_4xMsaaState != value)
 	{
-		return false;
+		m_4xMsaaState = value;
+
+		// Recreate the swapchain and buffers with new multisample settings.
+		CreateSwapChain();
+		OnResize();
 	}
+}
+
+int D3DApp::Run()
+{
+	MSG msg = { 0 };
+
+	m_Timer.Reset();
+
+	while (msg.message != WM_QUIT)
+	{
+		// If there are Window messages then process them.
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		// Otherwise, do animation/game stuff.
+		else
+		{
+			m_Timer.Tick();
+
+			if (!m_AppPaused)
+			{
+				CalculateFrameStats();
+				Update(m_Timer);
+				Draw(m_Timer);
+			}
+			else
+			{
+				Sleep(100);
+			}
+		}
+	}
+
+	return (int)msg.wParam;
+}
+
+bool D3DApp::Initialize()
+{
+	if (!InitMainWindow())
+		return false;
+
+	if (!InitDirect3D())
+		return false;
+
+	// Do the initial resize code.
+	OnResize();
 
 	return true;
 }
@@ -186,6 +270,11 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 	ThrowIfFailed(m_d3dDevice->CreateDescriptorHeap(
 		&dsvHeapDesc,
 		IID_PPV_ARGS(m_DsvHeap.GetAddressOf())));
+}
+
+ID3D12Resource* D3DApp::CurrentBackBuffer() const
+{
+	return m_SwapChainBuffer[m_CurrentBackBuffer].Get();
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
