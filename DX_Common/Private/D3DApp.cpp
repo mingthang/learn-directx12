@@ -16,6 +16,11 @@ D3DApp::~D3DApp()
 		FlushCommandQueue();
 }
 
+D3DApp* D3DApp::GetApp()
+{
+	return m_App;
+}
+
 HINSTANCE D3DApp::AppInst()const
 {
 	// returns a copy of the application instance handle
@@ -100,6 +105,11 @@ bool D3DApp::Initialize()
 	OnResize();
 
 	return true;
+}
+
+bool D3DApp::InitMainWindow()
+{
+
 }
 
 bool D3DApp::InitDirect3D()
@@ -272,6 +282,32 @@ void D3DApp::CreateRtvAndDsvDescriptorHeaps()
 		IID_PPV_ARGS(m_DsvHeap.GetAddressOf())));
 }
 
+void D3DApp::FlushCommandQueue()
+{
+	// Forces the CPU to wait until the GPU has finished
+	// processing all the commands in the queue
+
+	// Advance the fence value to mark commands up to this fence point.
+	m_CurrentFence++;
+
+	// Add an instruction to the command queue to set a new fence point.
+	// Because we are on the GPU timeline, the new fence point won’t be 
+	// set until the GPU finishes processing all the commands prior to 
+	// this Signal().
+	ThrowIfFailed(m_CommandQueue->Signal(m_Fence.Get(), m_CurrentFence));
+	// Wait until the GPU has completed commands up to this fence point.
+	if (m_Fence->GetCompletedValue() < m_CurrentFence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		// Fire event when GPU hits current fence. 
+		ThrowIfFailed(m_Fence->SetEventOnCompletion(m_CurrentFence, eventHandle));
+		// Wait until the GPU hits current fence event is fired.
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+
+}
+
 ID3D12Resource* D3DApp::CurrentBackBuffer() const
 {
 	return m_SwapChainBuffer[m_CurrentBackBuffer].Get();
@@ -290,4 +326,94 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilView() const
 {
 	// CD3DX12 constructor to get the DSV (only one, so no offset needed)
 	return m_DsvHeap->GetCPUDescriptorHandleForHeapStart();
+}
+
+void D3DApp::CalculateFrameStats()
+{
+
+}
+
+void D3DApp::LogAdapters()
+{
+	// Enumerates all the adapters on a system
+	// Example Output:		
+	//***Adapter: NVIDIA GeForce GTX 760
+	//***Adapter: Microsoft Basic Render Driver
+
+	UINT i = 0;
+	IDXGIAdapter* adapter = nullptr;
+	std::vector<IDXGIAdapter*> adapterList;
+	while (m_dxgiFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_ADAPTER_DESC desc;
+		adapter->GetDesc(&desc);
+
+		std::wstring text = L"***Adapter: ";
+		text += desc.Description;
+		text += L"\n";
+
+		OutputDebugString(text.c_str());
+		
+		adapterList.push_back(adapter);
+
+		++i;
+	}
+
+	for (size_t i = 0; i < adapterList.size(); ++i)
+	{
+		LogAdapterOutputs(adapterList[i]);
+		adapterList[i]->Release();
+		adapterList[i] = nullptr;
+	}
+}
+
+void D3DApp::LogAdapterOutputs(IDXGIAdapter* adapter)
+{
+	// Enumerates all the outputs associated with an adapter
+	UINT i = 0;
+	IDXGIOutput* output = nullptr;
+	while (adapter->EnumOutputs(i, &output) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_OUTPUT_DESC desc;
+		output->GetDesc(&desc);
+
+		std::wstring text = L"***Output: ";
+		text += desc.DeviceName;
+		text += L"\n";
+
+		OutputDebugString(text.c_str());
+
+		LogOutputDisplayModes(output, DXGI_FORMAT_B8G8R8A8_UNORM);
+
+		output->Release();
+		output = nullptr;
+
+		++i;
+	}
+}
+
+void D3DApp::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format)
+{
+	// Enumerates all the display modes an output supports for a given format
+
+	UINT count = 0;
+	UINT flags = 0;
+
+	// Call with nullptr to get list count.
+	output->GetDisplayModeList(format, flags, &count, nullptr);
+
+	std::vector<DXGI_MODE_DESC> modeList(count);
+	output->GetDisplayModeList(format, flags, &count, &modeList[0]);
+
+	for (auto& x : modeList)
+	{
+		UINT n = x.RefreshRate.Numerator;
+		UINT d = x.RefreshRate.Denominator;
+		std::wstring text =
+			L"Width = " + std::to_wstring(x.Width) + L" " +
+			L"Height = " + std::to_wstring(x.Height) + L" " +
+			L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
+			L"\n";
+		::OutputDebugString(text.c_str());
+	}
 }

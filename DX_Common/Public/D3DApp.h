@@ -94,6 +94,7 @@ protected:
 	Microsoft::WRL::ComPtr<IDXGISwapChain> m_SwapChain;
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> m_Fence;
+	UINT64 m_CurrentFence = 0;
 
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_CommandQueue;
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_DirectCmdListAlloc;
