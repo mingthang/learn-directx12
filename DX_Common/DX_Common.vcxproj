@@ -111,7 +111,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Public;$(ProjectDir)Vendors\DirectX-Headers\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include;$(ProjectDir)Vendors\DirectX-Headers\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -140,11 +140,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Public\D3DUtil.h" />
-    <ClInclude Include="Public\framework.h" />
-    <ClInclude Include="Public\pch.h" />
-    <ClInclude Include="Public\D3DApp.h" />
-    <ClInclude Include="Public\Timer.h" />
+    <ClInclude Include="Include\D3DUtil.h" />
+    <ClInclude Include="Include\framework.h" />
+    <ClInclude Include="Include\pch.h" />
+    <ClInclude Include="Include\D3DApp.h" />
+    <ClInclude Include="Include\Timer.h" />
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12.h" />
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_barriers.h" />
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_check_feature_support.h" />
@@ -158,16 +158,16 @@
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_state_object.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Private\D3DUtil.cpp" />
-    <ClCompile Include="Private\DX_Common.cpp" />
-    <ClCompile Include="Private\pch.cpp">
+    <ClCompile Include="Source\D3DUtil.cpp" />
+    <ClCompile Include="Source\DX_Common.cpp" />
+    <ClCompile Include="Source\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Private\D3DApp.cpp" />
-    <ClCompile Include="Private\Timer.cpp" />
+    <ClCompile Include="Source\D3DApp.cpp" />
+    <ClCompile Include="Source\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

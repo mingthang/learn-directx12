@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Public\framework.h">
+    <ClInclude Include="Include\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Public\pch.h">
+    <ClInclude Include="Include\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Public\D3DApp.h">
+    <ClInclude Include="Include\D3DApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Public\D3DUtil.h">
+    <ClInclude Include="Include\D3DUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12.h">
@@ -60,24 +60,24 @@
     <ClInclude Include="Vendors\DirectX-Headers\include\directx\d3dx12_state_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Public\Timer.h">
+    <ClInclude Include="Include\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Private\DX_Common.cpp">
+    <ClCompile Include="Source\DX_Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Private\pch.cpp">
+    <ClCompile Include="Source\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Private\D3DApp.cpp">
+    <ClCompile Include="Source\D3DApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Private\D3DUtil.cpp">
+    <ClCompile Include="Source\D3DUtil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Private\Timer.cpp">
+    <ClCompile Include="Source\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
