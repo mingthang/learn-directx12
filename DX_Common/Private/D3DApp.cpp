@@ -4,6 +4,8 @@
 #include "D3DUtil.h"
 #include "directx/d3dx12.h"
 
+#include "string.h"
+
 LRESULT CALLBACK
 MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -372,7 +374,36 @@ D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::DepthStencilView() const
 
 void D3DApp::CalculateFrameStats()
 {
+	// Frame Statistics - here I simply count the number of frames processed (and storei t) over some specified time period.
+	// Computes:
+	// - Average frames per second
+	// - Average time it takes to render one frame
 
+	static int frameCount = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCount++;
+
+	// Compute averages over one second period
+	if ((m_Timer.TotalTime() - timeElapsed) >= 1.0f)
+	{
+		float fps = (float)frameCount; // t=1 -> fps = frameCount / 1
+		float mspf = 1000.0f / fps; // milliseconds it takes, on average, to process a frame
+
+		std::wstring fpsStr = std::to_wstring(fps);
+		std::wstring mspfStr = std::to_wstring(mspf);
+
+		std::wstring windowText = m_MainWndCaption + L"	fps: " + fpsStr + L" mspf: " + mspfStr;
+		SetWindowText(m_hMainWnd, windowText.c_str());
+
+		// Reset for next average
+		frameCount = 0;
+		timeElapsed += 1.0f;
+	}
+
+	// FPS versus Frame Time
+	// - The time it takes to render a frame is more useful than the FPS
+	// - due to the non-linearity of the FPS curve, using the FPS can give misleading results
 }
 
 void D3DApp::LogAdapters()
