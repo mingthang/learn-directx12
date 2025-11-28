@@ -15,6 +15,14 @@ MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return D3DApp::GetApp()->MsgProc(hwnd, msg, wParam, lParam);
 }
 
+D3DApp::D3DApp(HINSTANCE hInstance)
+	: m_hAppInst(hInstance)
+{
+	// Only one D3DApp can be constructed.
+	assert(m_App == nullptr);
+	m_App = this;
+}
+
 D3DApp::~D3DApp()
 {
 	// The destructor releases the COM interfaces the D3DApp acquires, 
