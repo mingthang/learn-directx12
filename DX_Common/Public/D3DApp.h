@@ -10,6 +10,8 @@
 #include <dxgi1_6.h> // DXGI 1.6
 #include "Timer.h"
 
+#include <string>
+
 class D3DApp
 {
 public:
@@ -55,8 +57,6 @@ protected:
 	void CreateSwapChain();
 
 	void FlushCommandQueue();
-
-	void CreateRtvAndDsvDescriptorHeaps();
 
 	ID3D12Resource* CurrentBackBuffer() const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView() const;

@@ -5,8 +5,6 @@
 #include "directx/d3dx12.h"
 #include "Windowsx.h"
 
-#include "string.h"
-
 LRESULT CALLBACK
 MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -394,8 +392,9 @@ void D3DApp::OnResize()
 	optClear.Format = m_DepthStencilFormat;
 	optClear.DepthStencil.Depth = 1.0f;
 	optClear.DepthStencil.Stencil = 0;
+	auto ds_heap_properties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	ThrowIfFailed(m_d3dDevice->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		&ds_heap_properties,
 		D3D12_HEAP_FLAG_NONE,
 		&depthStencilDesc,
 		D3D12_RESOURCE_STATE_COMMON,
@@ -411,8 +410,9 @@ void D3DApp::OnResize()
 	m_d3dDevice->CreateDepthStencilView(m_DepthStencilBuffer.Get(), &dsvDesc, DepthStencilView());
 
 	// Transition the resource from its initial state to be used as a depth buffer.
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_DepthStencilBuffer.Get(),
-		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
+	auto ds_transition = CD3DX12_RESOURCE_BARRIER::Transition(m_DepthStencilBuffer.Get(),
+		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+	m_CommandList->ResourceBarrier(1, &ds_transition);
 
 	// Execute the resize commands.
 	ThrowIfFailed(m_CommandList->Close());
@@ -449,7 +449,7 @@ void D3DApp::FlushCommandQueue()
 	// Wait until the GPU has completed commands up to this fence point.
 	if (m_Fence->GetCompletedValue() < m_CurrentFence)
 	{
-		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
 		// Fire event when GPU hits current fence. 
 		ThrowIfFailed(m_Fence->SetEventOnCompletion(m_CurrentFence, eventHandle));
 		// Wait until the GPU hits current fence event is fired.
